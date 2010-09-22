@@ -1,0 +1,4 @@
+; $Id$
+name = Janrain
+description = An API to interface the third party Janrain service.
+core = 6.x
