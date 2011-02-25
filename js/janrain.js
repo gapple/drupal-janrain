@@ -1,4 +1,3 @@
-// $Id$
 
 /**
  * @file janrain/js/janrain.js

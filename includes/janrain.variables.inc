@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file janrain/includes/janrain.variables.inc
