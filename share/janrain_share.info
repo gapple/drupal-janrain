@@ -1,0 +1,6 @@
+name = Janrain Social Sharing
+description = Enables integration of Janrain Social Sharing into the Drupal site.
+package = Janrain
+core = 7.x
+php = 5.3
+dependencies[] = janrain

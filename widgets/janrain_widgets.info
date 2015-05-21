@@ -1,0 +1,6 @@
+name = Janrain User Interface
+description = Create and manage Janrain user interface packages for registration and social login.
+package = Janrain
+core = 7.x
+php = 5.3
+dependencies[] = janrain

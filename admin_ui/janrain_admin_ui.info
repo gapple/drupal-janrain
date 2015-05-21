@@ -1,0 +1,6 @@
+name = Janrain Admin UI
+description = Enables Janrain administrative UI for setting up your Drupal site configuration.
+package = Janrain
+core = 7.x
+php = 5.3
+dependencies[] = janrain

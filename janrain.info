@@ -1,0 +1,8 @@
+name = Janrain
+description = Core Janrain services module.
+package = Janrain
+core = 7.x
+php = 5.3
+dependencies[] = services
+dependencies[] = rest_server
+configure = admin/config/people/janrain

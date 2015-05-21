@@ -1,0 +1,7 @@
+name = Janrain Data
+description = Integrates Janrain customer profile information with Drupal Rules to enable mapping from Janrain to Drupal.
+package = Janrain
+core = 7.x
+php = 5.3
+dependencies[] = janrain
+dependencies[] = rules
