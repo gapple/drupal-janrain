@@ -109,4 +109,19 @@ class DrupalAdapter implements \janrain\Adapter {
     // Return sensible default if language->language missing.
     return 'en-US';
   }
+
+  /**
+   * Drupal "Function" comment.
+   */
+  public function setLoginPage() {
+    global $base_root;
+    $ruri = request_uri();
+    // Don't set for requests against service endpoints.
+    if (0 === stripos($ruri, '/services/') || 0 === stripos($ruri, '/janrain/registration/')) {
+      // Widgets wont be rendered on service endpoints.
+      return;
+    }
+    // Not a service endpoint, set the current page.
+    self::setSessionItem('capture.currentUri', $base_root . $ruri);
+  }
 }

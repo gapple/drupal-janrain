@@ -39,10 +39,6 @@ function janrain_widgets_block_view($delta = '') {
   }
 
   $sdk = JanrainSdk::instance();
-  global $base_root;
-  $current_url = $base_root . request_uri();
-  $adapter = $sdk->getConfig();
-  $adapter::setSessionItem('capture.currentUri', $current_url);
 
   $block['content']['#attached']['js'] = array();
   $js = file_get_contents(drupal_get_path('module', 'janrain_widgets') . '/registration.js');
@@ -78,6 +74,7 @@ function janrain_widgets_block_view($delta = '') {
   else {
     $form_action = $GLOBALS['base_url'] . "/?q=user/login";
   }
+  // @todo generate form from Forms API to gain security and stuff
   $block['content']['#markup'] .= '<form action="' . check_url($form_action) . '"  style="display:none;" method="post" id="user_login"><input name="form_id" value="user_login"/></form>';
   return $block;
 }

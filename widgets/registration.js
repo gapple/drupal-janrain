@@ -28,7 +28,6 @@ janrain.plex.login = function(oauthCode) {
           data:{code:oauthCode},
           success: function (resp) {
             console && console.log(resp);
-            // @todo generate form from Forms API to gain security and stuff
             document.getElementById('user_login').submit();
           }
       });

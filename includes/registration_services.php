@@ -52,12 +52,23 @@ function _janrain_services_resources() {
  * @todo clean up capture profile request to only pull identity fields.
  */
 function _janrain_registration_code_service_callback($code) {
+  global $base_root;
   $sdk = JanrainSdk::instance();
 
-  // Token is a capture oauth code.
   try {
     $settings = $sdk->getConfig();
-    $redirect_uri = $settings::getSessionItem('capture.currentUri');
+
+    // Prefer the referrer header (browsers protect it, reliably send it even in
+    // "private" mode when requesting from the same domain over ajax).
+    $referrer = empty($_SERVER['HTTP_REFERER']) ? FALSE : $_SERVER['HTTP_REFERER'];
+    if ($referrer && FALSE !== stripos($referrer, $base_root)) {
+      // Referrer was sent AND sanity checked it's for the originating site.
+      $redirect_uri = $referrer;
+    }
+    else {
+      // Fallback to "last visited page" for referrer blockers.
+      $redirect_uri = $settings::getSessionItem('capture.currentUri');
+    }
     // @todo create SDK fetchIdentity() for capture.
     $tokens = $sdk->CaptureApi->fetchTokensFromCode($code, $redirect_uri);
   }

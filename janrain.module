@@ -21,16 +21,27 @@ if (!class_exists('Guzzle\\Http\\Client')) {
 require_once __DIR__ . '/lib/DrupalAdapter.php';
 
 /**
- * Implements hook_init().
+ * Implements hook_boot().
+ *
+ * Since Drupal can cache everything, we have to initialize at boot to make sure
+ * the session has THIS request's data.
  */
-function janrain_init() {
-
-  // Load other files.
-  module_load_include('php', 'janrain', 'includes/identity');
-
+function janrain_boot() {
   // Initialize the sdk.
   $adapter = DrupalAdapter::fromDrupal();
   $sdk = JanrainSdk::forAdapter($adapter);
+  $sdk->getConfig()->setLoginPage();
+}
+
+/**
+ * Implements hook_init().
+ */
+function janrain_init() {
+  // Load SDK.
+  $sdk = JanrainSdk::instance();
+
+  // Load other files.
+  module_load_include('php', 'janrain', 'includes/identity');
 
   if (_janrain_is_login_only()) {
     module_load_include('php', 'janrain', 'includes/login');
