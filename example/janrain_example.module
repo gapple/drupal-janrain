@@ -1,13 +1,12 @@
 <?php
-
 /**
  * @file
- * Janrain Example -> Example Drupal Implementation
+ * Janrain Example -> Example Drupal Implementation.
  *
- * override signin/registration
+ * Override signin/registration
  * add a tab for profile widget to the profile page
  * override logout
- * map something using profile_entity
+ * map something using profile_entity.
  */
 
 /**
@@ -41,13 +40,12 @@ function janrain_example_janrain_settings_form_validate($form, &$form_state) {
     return;
   }
 
-  // Skip if Login-only
+  // Skip if Login-only.
   if (_janrain_is_login_only()) {
     return;
   }
 
   // Check for Registration endpoint config.
-
   // What does Janrain registration think?
   $sdk = JanrainSdk::instance();
   $raw = $sdk->CaptureApi->settingsItems();

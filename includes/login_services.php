@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Service definitions for Janrain Module in login mode
+ * Service definitions for Janrain Module in login mode.
  */
 
 /**
@@ -55,6 +55,7 @@ function _janrain_login_token_service_callback($token) {
 
   // Set session data.
   DrupalAdapter::setSessionItem('identifiers', $profile->getIdentifiers());
+  DrupalAdapter::setSessionItem('name', $profile->getFirst("$.profile.displayName"));
   DrupalAdapter::setSessionItem('profile', $profile->__toString());
   return 'Session enhanced with social login data! Proceed to login';
 }

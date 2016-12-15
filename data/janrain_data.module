@@ -1,19 +1,18 @@
 <?php
 /**
  * @file
- * Janrain Data submodule
+ * Janrain Data submodule.
  */
 
 /**
  * Implements hook_user_login().
  */
 function janrain_data_user_login(&$form, $account) {
-  $profile = _janrain_is_login_only() ? _janrain_data_user_login_login() : _janrain_data_user_login_registration();
+  $profile = _janrain_is_login_only() ? _janrain_data_user_login_login() : _janrain_data_user_login_registration($form);
   if (!$profile) {
     return;
   }
   rules_invoke_event_by_args('janrain_data_profile_updated', array('profile' => $profile));
-  module_invoke_all('janrain_profile_updated', $profile, $account);
 }
 
 /**
@@ -50,16 +49,10 @@ function _janrain_data_user_login_login() {
 /**
  * Registration profile helper.
  */
-function _janrain_data_user_login_registration() {
+function _janrain_data_user_login_registration(&$form) {
   $token = DrupalAdapter::getSessionItem('accessToken');
   if (!$token) {
     return;
   }
-  try {
-    return JanrainSdk::instance()->CaptureApi->fetchProfileByToken($token);
-  }
-  catch (\Exception $e) {
-    watchdog('janrain_data', $e->getMessage(), array(), WATCHDOG_CRITICAL);
-    error_log($e->getTraceAsString());
-  }
+  return $form['janrain']['profile'];
 }

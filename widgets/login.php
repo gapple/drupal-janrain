@@ -25,7 +25,7 @@ function janrain_widgets_block_view($delta = '') {
       var base_path = Drupal.settings.basePath;
       if (!Drupal.settings.janrain.clean_url) {
         base_path = Drupal.settings.basePath + '?q=';
-      } 
+      }
       if (!accessToken) {
           console && console.error('Bork!');
       }
@@ -42,7 +42,7 @@ function janrain_widgets_block_view($delta = '') {
                 error: function (jqxhr, status, error) {console.error(error);},
                 data:{token:accessToken},
                 success: function (resp) {
-                  console.log(resp);                 
+                  console.log(resp);
                   // @todo generate form from Forms API to gain security and stuff
                   document.getElementById('user_login').submit();
                 } // janrain success
@@ -61,7 +61,10 @@ function janrain_widgets_block_view($delta = '') {
   $block['content']['#attached']['js'][] = array('type' => 'inline', 'data' => $js);
   foreach ($sdk->getJsSrcs() as $src) {
     $block['content']['#attached']['js'][] = array(
-      'type' => 'external', 'group' => JS_LIBRARY, 'data' => $src);
+      'type' => 'external',
+      'group' => JS_LIBRARY,
+      'data' => $src,
+    );
   }
   $block['content']['#markup'] = $sdk->EngageWidget->getHtml();
 

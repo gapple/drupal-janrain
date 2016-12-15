@@ -10,7 +10,7 @@
 function janrain_example_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_birthday'
+  // Exported field_base: 'field_birthday'.
   $field_bases['field_birthday'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -40,7 +40,7 @@ function janrain_example_field_default_field_bases() {
     'type' => 'datetime',
   );
 
-  // Exported field_base: 'field_gender'
+  // Exported field_base: 'field_gender'.
   $field_bases['field_gender'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -69,7 +69,7 @@ function janrain_example_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_last_logged_in'
+  // Exported field_base: 'field_last_logged_in'.
   $field_bases['field_last_logged_in'] = array(
     'active' => 1,
     'cardinality' => 1,

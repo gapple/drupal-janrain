@@ -108,6 +108,18 @@ function _janrain_widgets_remove_pkg($fid) {
   $success = file_delete($file, TRUE);
   if ($success) {
     watchdog('janrain_widgets', 'Removed file {{uri}}', array('{{uri}}' => $file->uri), WATCHDOG_NOTICE);
+    // Destroy all blocks created from this widget package.
+    $delete = db_delete('block');
+    $delete_block_roles = db_delete('block_role');
+    $delete_where = db_and();
+    $delete_where->condition('module', 'janrain_widgets');
+    $delete_where->condition('delta', "%_{$fid}", 'LIKE');
+    $delete_block_roles->condition($delete_where)->execute();
+    $num = $delete->condition($delete_where)->execute();
+    watchdog('janrain_widgets', 'Removed {{num}} blocks for {{file}}', array(
+      '{{file}}' => $file->filename,
+      '{{num}}' => $num,
+    ), WATCHDOG_NOTICE);
   }
   return $success;
 }
@@ -195,7 +207,7 @@ function _janrain_widgets_list_pkgs() {
  * Helper to synchronize upload folder to managed files.
  *
  * There may be a situation during upgrades and or uninstall/reinstall cycles
- * where drupal forgets about come packages. This function helps ensure packages
+ * where drupal forgets about some packages. This function helps ensure packages
  * wont be lost, however, if they become unbound from their managed file entry
  * they'll be assigned a new managed file (new blocks). Likewise, managed files
  * that point to nothing are purged. This clears the list cache.

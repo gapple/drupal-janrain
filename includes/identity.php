@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Identity related functions
+ * Identity related functions.
  */
 
 /**
@@ -29,21 +29,24 @@ function _janrain_ensure_authmap($account, $authname) {
         'uid' => $account->uid,
         'authname' => $authname,
         'module' => 'janrain',
-        ))
+      ))
       ->execute();
     watchdog('janrain', 'Linked {{authname}} to {{user}}.', array(
       '{{authname}}' => filter_xss($authname),
-      '{{user}}' => format_username($account)), WATCHDOG_INFO);
+      '{{user}}' => format_username($account),
+    ), WATCHDOG_INFO);
   }
   else {
     watchdog('janrain', '{{user}} already linked to {{authname}}', array(
       '{{authname}}' => filter_xss($authname),
-      '{{user}}' => format_username($account)), WATCHDOG_DEBUG);
+      '{{user}}' => format_username($account),
+    ), WATCHDOG_DEBUG);
   }
 }
 
 /**
  * Wrapper to access session identifiers.
+ *
  * @todo-3.1 move this into sdk
  */
 function _janrain_get_identifiers() {
@@ -53,8 +56,8 @@ function _janrain_get_identifiers() {
 /**
  * Ensure all identifiers found in the current session are linked.
  */
-function _janrain_link_identifiers($account) {
-  $identifiers = _janrain_get_identifiers();
+function _janrain_link_identifiers($account, $profile) {
+  $identifiers = _janrain_is_login_only() ? _janrain_get_identifiers() : $profile->getIdentifiers();
   foreach ($identifiers as $ext_id) {
     _janrain_ensure_authmap($account, $ext_id);
   }

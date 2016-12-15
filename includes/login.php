@@ -6,6 +6,7 @@
 
 /**
  * Implements hook_form_user_register_form_alter().
+ *
  * @todo-3.1 display icon and displayname in addition to identifier
  */
 function janrain_form_user_register_form_alter(&$form, &$form_state) {
@@ -35,8 +36,7 @@ function janrain_form_user_register_form_alter(&$form, &$form_state) {
  */
 function janrain_form_user_register_form_submit(&$form, &$form_state) {
   $account = $form['#user'];
-
-  _janrain_link_identifiers($account);
+  _janrain_link_identifiers($account, NULL);
   _janrain_clear_session();
 
   // Log user in.
@@ -82,7 +82,7 @@ function janrain_login_validate(&$form, &$form_state) {
   // No users with that identifier, find by verifiedEmail.
   $account = $vemail ? user_load_by_mail($vemail) : FALSE;
   if ($vemail && $account) {
-    _janrain_link_identifiers($account);
+    _janrain_link_identifiers($account, NULL);
     _janrain_clear_session();
     $form_state['uid'] = $account->uid;
     watchdog('janrain', '{{user}} logged in by verified email.',
@@ -96,7 +96,7 @@ function janrain_login_validate(&$form, &$form_state) {
     // Honor Drupal email validation.  Admin accounts require verified email.
     if (!$strict_email && ($account->uid != 1)) {
       // Drupal doesn't care about email verification.
-      _janrain_link_identifiers($account);
+      _janrain_link_identifiers($account, NULL);
       _janrain_clear_session();
       $form_state['uid'] = $account->uid;
       watchdog('janrain', '{{user}} logged in by unverified email.',

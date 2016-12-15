@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Janrain Administrative UI submodule
+ * Janrain Administrative UI submodule.
  */
 
 /**
@@ -92,7 +92,6 @@ function janrain_admin_ui_settings_form($form, &$form_state) {
   $social_data = array(
     '#type' => 'fieldset',
     '#title' => t('Social Login + Registration Settings'),
-    // '#weight' => 1,
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#tree' => TRUE,
@@ -234,7 +233,8 @@ function _janrain_admin_ui_settings_form_validate_login_only($form, &$form_state
   foreach ($config_errors as $setting_name => $err_codes) {
     $msg = t('Setting %name failed validation. (%codes)', array(
       '%name' => check_plain($setting_name),
-      '%codes' => filter_xss(implode(',', $err_codes))));
+      '%codes' => filter_xss(implode(',', $err_codes)),
+    ));
     drupal_set_message($msg, 'error');
   }
 }
@@ -313,7 +313,8 @@ function _janrain_admin_ui_settings_form_validate_registration($form, &$form_sta
   foreach ($config_errors as $setting_name => $err_codes) {
     $msg = t('Setting %name failed validation. (%codes)', array(
       '%name' => $setting_name,
-      '%codes' => filter_xss(implode(',', $err_codes))));
+      '%codes' => filter_xss(implode(',', $err_codes)),
+    ));
     drupal_set_message($msg, 'error');
   }
 }

@@ -61,7 +61,8 @@ function janrain_widgets_block_view($delta = '') {
   }
   $block['content']['#attached']['js'][] = array(
     'data' => $js,
-    'type' => 'inline');
+    'type' => 'inline',
+  );
   $block['content']['#markup'] = '';
   $block['content']['#attached']['js'][] = array('data' => "$widget_folder_uri/janrain-init.js", 'type' => 'file');
   $block['content']['#attached']['js'][] = array('data' => "$widget_folder_uri/janrain-utils.js", 'type' => 'file');

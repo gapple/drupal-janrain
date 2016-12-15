@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Service definitions for Janrain Module in registration mode
+ * Service definitions for Janrain Module in registration mode.
  */
 
 /**
@@ -49,28 +49,34 @@ function _janrain_services_resources() {
 
 /**
  * Handles registration/code.
- * @todo clean up capture profile request to only pull identity fields.
  */
 function _janrain_registration_code_service_callback($code) {
+  timer_start(__FUNCTION__);
   global $base_root;
   $sdk = JanrainSdk::instance();
 
   try {
     $settings = $sdk->getConfig();
 
-    // Prefer the referrer header (browsers protect it, reliably send it even in
-    // "private" mode when requesting from the same domain over ajax).
-    $referrer = empty($_SERVER['HTTP_REFERER']) ? FALSE : $_SERVER['HTTP_REFERER'];
-    if ($referrer && FALSE !== stripos($referrer, $base_root)) {
-      // Referrer was sent AND sanity checked it's for the originating site.
-      $redirect_uri = $referrer;
+    // Where did the login start?
+    $login_url = $_SERVER['HTTP_REFERER'];
+    // Check referrer is 1st party.
+    $login_host_matches = FALSE !== stripos($login_url, $base_root);
+    // Sanity check AJAX origin is also 1st party.
+    $login_origin_matches = FALSE !== stripos($base_root, $_SERVER['HTTP_ORIGIN']);
+    $good_login_url = $login_host_matches && $login_origin_matches;
+    if (!$good_login_url) {
+      // Bad referer, fallback to session based login_url.
+      $login_url = $sdk->getSessionItem('capture.currentUri');
     }
-    else {
-      // Fallback to "last visited page" for referrer blockers.
-      $redirect_uri = $settings::getSessionItem('capture.currentUri');
+    // Check for login_url.
+    if (empty($login_url)) {
+      // Something is fishy here, blow up.
+      services_error('Login URL is not verifiable, aborting login.');
+      return;
     }
-    // @todo create SDK fetchIdentity() for capture.
-    $tokens = $sdk->CaptureApi->fetchTokensFromCode($code, $redirect_uri);
+    // Everything looks okay, fetch tokens.
+    $tokens = $sdk->CaptureApi->fetchTokensFromCode($code, $login_url);
   }
   catch (Exception $e) {
     // Capture call failed for login, this is superbad.
@@ -83,27 +89,14 @@ function _janrain_registration_code_service_callback($code) {
   DrupalAdapter::setSessionItem('refreshToken', $tokens['refresh_token']);
   // Set the token expiration timestamp to be 10 min less than the timeout.
   DrupalAdapter::setSessionItem('tokenExpires', time() + intval($tokens['expires_in']) - 60 * 10);
-
-  $profile = $sdk->CaptureApi->fetchProfileByToken(DrupalAdapter::getSessionItem('accessToken'));
-  DrupalAdapter::setSessionItem('name', $profile->getFirst('$.displayName'));
-
-  $email = $profile->getFirst('$.email');
-  $verified_string = $profile->getFirst('$.emailVerified');
-  if ($verified_string && (FALSE !== strtotime($verified_string))) {
-    // Verified date exists and translates to a real timestamp.
-    $verified_email = $email;
-  }
-  else {
-    $verified_email = FALSE;
-  }
-  DrupalAdapter::setSessionItem('email', $email);
-  DrupalAdapter::setSessionItem('verifiedEmail', $verified_email);
-  DrupalAdapter::setSessionItem('identifiers', $profile->getIdentifiers());
+  $info = timer_stop(__FUNCTION__);
+  drupal_add_http_header("X-Janrain-Perf", sprintf("%fms", $info['time']));
   return 'Session enhanced by Janrain Registration! Proceed to login';
 }
 
 /**
  * Handles registration/session_token calls.
+ *
  * @todo-3.1 move session management into SDK
  */
 function _janrain_session_callback() {

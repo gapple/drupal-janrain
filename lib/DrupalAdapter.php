@@ -1,12 +1,14 @@
 <?php
 /**
  * @file
+ * DrupalAdapter enables PHPSDK to talk to Drupal.
+ *
  * @todo-3.1 Rewrite this to be an adaptor implementation maybe move adaptors
  * into sdk so we can avoid this horrible code convention?
  */
 
 /**
- * Docblock
+ * Docblock.
  */
 class DrupalAdapter implements \janrain\Adapter {
 
@@ -20,9 +22,6 @@ class DrupalAdapter implements \janrain\Adapter {
    */
   public function __construct($data = array()) {
     $this->settings = new \ArrayObject($data, \ArrayObject::ARRAY_AS_PROPS);
-    if (!isset($_SESSION['janrain'])) {
-      $_SESSION['janrain'] = array();
-    }
   }
 
   /**
@@ -84,6 +83,9 @@ class DrupalAdapter implements \janrain\Adapter {
    * Drupal "Function" comment.
    */
   public static function setSessionItem($key, $value) {
+    if (!isset($_SESSION['janrain'])) {
+      $_SESSION['janrain'] = array();
+    }
     $_SESSION['janrain'][$key] = $value;
   }
   /**
@@ -114,7 +116,13 @@ class DrupalAdapter implements \janrain\Adapter {
    * Drupal "Function" comment.
    */
   public function setLoginPage() {
+    // Shortcut session activation if referer is first party.
     global $base_root;
+    if (FALSE !== stripos($_SERVER['HTTP_REFERER'], $base_root)) {
+      return;
+    }
+    // Browser agent isn't sending referer headers so fire up a session to
+    // remember where the login started.
     $ruri = request_uri();
     // Don't set for requests against service endpoints.
     if (0 === stripos($ruri, '/services/') || 0 === stripos($ruri, '/janrain/registration/')) {
@@ -124,4 +132,5 @@ class DrupalAdapter implements \janrain\Adapter {
     // Not a service endpoint, set the current page.
     self::setSessionItem('capture.currentUri', $base_root . $ruri);
   }
+
 }

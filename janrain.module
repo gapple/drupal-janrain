@@ -50,7 +50,9 @@ function janrain_init() {
   else {
     // Disable visitor-initiated account creation via Drupal
     // (admins may still create accounts, but they should do so in Capture).
-    variable_set('user_register', USER_REGISTER_ADMINISTRATORS_ONLY);
+    if (variable_get("user_register") != USER_REGISTER_ADMINISTRATORS_ONLY) {
+      variable_set('user_register', USER_REGISTER_ADMINISTRATORS_ONLY);
+    }
     module_load_include('php', 'janrain', 'includes/registration');
     $sdk->addFeatureByName('CaptureApi');
   }
@@ -87,6 +89,7 @@ function _janrain_is_login_only() {
 
 /**
  * Helper to clean up sessions after Janrain login attempts.
+ *
  * @todo-3.1 Move to sdk
  */
 function _janrain_clear_session($remove_tokens = FALSE) {
@@ -103,6 +106,7 @@ function _janrain_clear_session($remove_tokens = FALSE) {
 
 /**
  * Implements hook_user_logout().
+ *
  * @todo-3.1 move into sdk
  */
 function janrain_user_logout($account) {
@@ -115,12 +119,6 @@ function janrain_user_logout($account) {
 function janrain_form_user_login_alter(&$form, &$form_state) {
   $form['name']['#required'] = FALSE;
   $form['pass']['#required'] = FALSE;
-  // Capture login that failed.
-  if (DrupalAdapter::getSessionItem('accessToken')) {
-    $form['name']['#default_value'] = DrupalAdapter::getSessionItem('name');
-    // Add submit handler.
-    $form['#submit'][] = 'janrain_form_user_login_form_submit';
-  }
   array_unshift($form['#validate'], 'janrain_login_validate');
 }
 
@@ -146,7 +144,7 @@ function janrain_ctools_plugin_api($owner, $api) {
 /**
  * Implements hook_default_services_endpoint().
  *
- * from service export
+ * From service export.
  */
 function janrain_default_services_endpoint() {
   $endpoint = new stdClass();

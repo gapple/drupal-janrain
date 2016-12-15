@@ -10,7 +10,7 @@
 function janrain_example_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'user-user-field_birthday'
+  // Exported field_instance: 'user-user-field_birthday'.
   $field_instances['user-user-field_birthday'] = array(
     'bundle' => 'user',
     'deleted' => 0,
@@ -56,7 +56,7 @@ function janrain_example_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_gender'
+  // Exported field_instance: 'user-user-field_gender'.
   $field_instances['user-user-field_gender'] = array(
     'bundle' => 'user',
     'default_value' => NULL,
@@ -89,7 +89,7 @@ function janrain_example_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'user-user-field_last_logged_in'
+  // Exported field_instance: 'user-user-field_last_logged_in'.
   $field_instances['user-user-field_last_logged_in'] = array(
     'bundle' => 'user',
     'deleted' => 0,

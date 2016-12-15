@@ -234,7 +234,7 @@ function janrain_widgets_settings_form_validate(&$form, &$form_state) {
 /**
  * Submit handler for widget_settings_form.
  *
- * Note: This gets called after janrain_admin_ui_settings_form_submit
+ * Note: This gets called after janrain_admin_ui_settings_form_submit.
  */
 function janrain_widgets_janrain_settings_form_submit(&$form, &$form_state) {
   $sdk = JanrainSdk::instance();
